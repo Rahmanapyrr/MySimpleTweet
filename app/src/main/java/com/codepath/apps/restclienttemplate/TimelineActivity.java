@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -20,6 +21,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -92,8 +94,28 @@ public class TimelineActivity extends AppCompatActivity {
             String name = data.getExtras().getString("name");
             int code = data.getExtras().getInt("code", 0);
             // Toast the name to display temporarily on screen
+//            Tweet tweet = (Tweet) Parcels.unwrap(data.getParcelableExtra("tweet"));
+            Tweet tweet = (Tweet) data.getSerializableExtra("tweet");
+
             Toast.makeText(this, name, Toast.LENGTH_LONG).show();
+
+            tweets.add(0, tweet);
+            tweetAdapter.notifyItemInserted(0);
+            rvTweets.scrollToPosition(0);
         }
+    }
+
+
+    public void onSubmit(View v) {
+        EditText etName = (EditText) findViewById(R.id.composeText);
+        // Prepare data intent
+        Intent data = new Intent();
+        // Pass relevant data back as a result
+        data.putExtra("name", etName.getText().toString());
+        data.putExtra("code", 200); // ints work too
+        // Activity finished ok, return the data
+        setResult(RESULT_OK, data); // set result code and bundle data for response
+        finish(); // closes the activity, pass data to parent
     }
 
 
